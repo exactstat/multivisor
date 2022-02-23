@@ -114,7 +114,11 @@ class MultivisorNamespaceRPCInterface(SupervisorNamespaceRPCInterface):
         except AttributeError:
             # old supervisor version
             payload_str = text_type(event)
+        
+        if "channel:stdout" in payload_str:
+            payload_str = payload_str.split("channel:stdout")[0]+"channel:stdout"
         payload = dict((x.split(":") for x in payload_str.split()))
+        
         if event_name.startswith("PROCESS_STATE"):
             pname = "{}:{}".format(payload["groupname"], payload["processname"])
             payload[u"process"] = parse_obj(self.getProcessInfo(pname))
